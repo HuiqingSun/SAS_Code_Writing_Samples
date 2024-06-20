@@ -33,7 +33,7 @@ run;
 ```
 proc import datafile="excel_file_path"
   dbms=xlsx
-  out=work.file(rename=(B=clinical_episode_category
+  out=work.file(rename=(B=category
                         C=year
                         D=HCPCS_CD))
   replace;
@@ -42,14 +42,14 @@ proc import datafile="excel_file_path"
   range="B8:F276";
 run;
 ```
-### To read in a list of values of a variable and use it as a macro var using SQL procedure within ce-level looping;
+### To read in a list of values of a variable and use it as a macro var using SQL procedure within c-level looping;
 ```
 proc sql no print;
 select _NAME_,
        substr(_NAME_,4)
-into: ce&ce._parameters separated by " ",
-    : ce&ce._x separated by " "
-from reference.ce&ce._type
+into: ce&c._parameters separated by " ",
+    : ce&c._x separated by " "
+from reference.ce&c._type
 where substr(_NAME_,1,3)="B1_" and substr(_NAME_,1,4)="B1_0"
 ;
 quit;
