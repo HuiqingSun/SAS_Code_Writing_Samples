@@ -76,7 +76,22 @@ proc print data=wor.test;
 run;
 
 ```
+### Suppose there are two tables, march_schedule contains all classes that scheduled for March, while classcancled contains all cancled class information, use SQL to list all of classes that were scheduled for March, along with any available corresponding  cancle information
+```
+proc sql outobs=20;
+title 'All March Classes';
+   select m.date,
+          m.class_id label='class name',
+          m.class_info label='Left',
+          c.class_info label='Right',
+          cancle_info  label='Cancle_status'
+from march_schedule as m left join 
+     classcancled as c
+   on m.date=c.date and c.class_id=c.class_id
+order by cancle_info; 
+quit;
 
+```
 ### To import Excel files and rename variables
 ```
 proc import datafile="excel_file_path"
