@@ -3,6 +3,7 @@ This repository contains some SAS code writing samples that I constructed and us
 
 
 ### To import Excel files and rename variables
+```
 proc import datafile="excel_file_path"
   dbms=xlsx
   out=work.file(rename=(B=clinical_episode_category
@@ -13,8 +14,9 @@ proc import datafile="excel_file_path"
   getnames=no;
   range="B8:F276";
 run;
-
+```
 ### To read in a list of values of a variable and use it as a macro var using SQL procedure within ce-level looping;
+```
 proc sql no print;
 select _NAME_,
        substr(_NAME_,4)
@@ -24,8 +26,9 @@ from reference.ce&ce._type
 where substr(_NAME_,1,3)="B1_" and substr(_NAME_,1,4)="B1_0"
 ;
 quit;
-
+```
 ### Calculations within SQL procedures;
+```
 proc sql;
   create table out.summary as
   select count(*) as total
@@ -49,8 +52,9 @@ proc sql;
     having Avg_salary < (select avg(Employee_annual_salary) from work.salary)
     order by Avg_salary;
 quit;
-
+```
 ### hash merge steps;   
+```
 data work.report;
   if 0 then set work.file (keep=A B C);
   if _N_=1 then do; 
@@ -61,6 +65,7 @@ data work.report;
   end;
   if claim.find()=0 then output;
 run;
+```
 
 
 
