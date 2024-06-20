@@ -1,6 +1,33 @@
 # SAS_Code_Writing_Samples
 This repository contains some SAS code writing samples that I constructed and used throughout my career.
 
+### Following codes can use hash merge to calculate the total grades by student_id level
+```
+data _NULL_;
+   if _N_=0 then do;
+      length student_id total_grades 8.;
+   end;
+
+   if _N_=1 then do;
+      declare hash grade_hash();
+      grade_hash.definekey('student_id');
+      grade_hash.definedata('student_id','total_grades');
+      grade_hash.definedone();
+   end;
+   call missing (of _ALL_);
+
+   set work.grades end=last;
+
+   found=grade_hash.find()=0;
+   total_grades=sum(grade,total_grades);
+
+   if not found then grade_hash.add();
+   grade_hash.replace();
+
+   if last then grade_hash.output(dataset:'out.total_grades_by_student_id');
+run;
+
+```
 
 ### To import Excel files and rename variables
 ```
@@ -58,7 +85,7 @@ quit;
 data work.report;
   if 0 then set work.file (keep=A B C);
   if _N_=1 then do; 
-    declare hash claim (dataset: "work.file"); 
+    declare hash claim (dataset: "work.file(where=(flag=1))"); 
     claim.definekey ("A"); 
     claim.definedata ("B", "C"); 
     claim.definedone(); 
