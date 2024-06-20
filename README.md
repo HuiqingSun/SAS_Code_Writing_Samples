@@ -44,7 +44,7 @@ quit;
 %put _user_;
 ```
 
-### Use CALL SYMPUTX to create a macro variable to use
+### Use CALL SYMPUTX to create a series of macro variables to use
 
 This example creates three macro variables. The macro variable Csrname records the
 value of the DATA step variable Course_title. The macro variable date records the value
