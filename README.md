@@ -28,6 +28,54 @@ data _NULL_;
 run;
 
 ```
+### Use Proc SQL to create a series of macro variables that contain the course code, location, and starting date of all courses that are scheduled in 2020. 
+```
+proc sql noprint;
+   select course_code, location, begin_date format=mmddyy10.
+   into :course1- ,
+        :place1- ,
+        :date1-
+from course.schedule
+where year(begin_date)=2020
+order by begin_date;
+quit;
+
+%put There are &sqlobs courses in 2020;
+%put _user_;
+```
+
+### Use CALL SYMPUTX to create a macro variable to use
+
+This example creates three macro variables. The macro variable Csrname records the
+value of the DATA step variable Course_title. The macro variable date records the value
+of the DATA step variable Begin_date in MMDDYY10. format. Finally, the macro
+variable Due uses the values of the DATA step variables Paidup, Total, and Fee to record
+the current amount of unpaid fees in DOLLAR8. format. These macro variables are
+referenced later in the program in the TITLE and FOOTNOTE statements.
+
+```
+%let crsnum=3;
+data work.test;
+
+set course.all end=last;
+
+   where course_number=&crsnum;
+   total+1;
+   if paid='Y' then paidup+1;
+   if last then do;
+      call symputx('crsname',course_title);
+      call symputx('date',put(begin_date,mmddyy10.));
+      call symputx('due',put(fee*(total-paidup),dollar8.));
+   end;
+run;
+
+proc print data=wor.test;
+   var student_name student_company paid;
+   title "Fee Status for &crsname (#&crsnum) Held &date";
+   footnote "Note: &due in Unpaid Fees";
+run;
+
+```
 
 ### To import Excel files and rename variables
 ```
